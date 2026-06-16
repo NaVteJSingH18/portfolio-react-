@@ -1,6 +1,6 @@
 import React from "react";
 import ProfileShowcase from "./ProfileShowcase";
-
+import LogoSphere from "./LogoSphere";
 export default function Hero() {
   return (
     <section id="home" className="relative flex min-h-screen items-center pt-24 pb-12 sm:pt-32">
@@ -11,6 +11,7 @@ export default function Hero() {
           
           {/* Availability Badge */}
           <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-300">
+            
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
@@ -20,8 +21,9 @@ export default function Hero() {
 
           {/* Mini Profile Info */}
           <div className="flex items-center gap-3">
+            
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-800 text-sm font-bold text-white">
-              NS
+              <LogoSphere className="h-8 w-8" />
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-zinc-500">Portfolio of</span>

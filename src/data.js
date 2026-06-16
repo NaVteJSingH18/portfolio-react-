@@ -61,7 +61,7 @@ export const fallbackBlogs = [
 
 export const contactLinks = [
   { label: "Email", value: "navtej.dgc@gmail.com", href: "mailto:navtej.dgc@gmail.com", icon: Mail },
-  { label: "Phone", value: "90523423985", href: "tel:90523423985", icon: Phone },
+  { label: "Phone", value: "9464734065", href: "tel:9464734065", icon: Phone },
   { label: "Location", value: "Punjab, India", href: "#contact", icon: MapPin },
 ];
 
