@@ -26,7 +26,7 @@ export default function About() {
             <h3 className="mb-4 text-lg font-semibold text-white">What I bring to the table</h3>
             <ul className="space-y-3 text-zinc-300">
               {[
-                "Strong foundation in HTML, CSS, and JavaScript",
+                "Strong foundation in MERN Stack",
                 "Hands-on experience with Node.js and Express backend work",
                 "Understanding of REST APIs and database integration",
                 "Git and GitHub workflow knowledge",
