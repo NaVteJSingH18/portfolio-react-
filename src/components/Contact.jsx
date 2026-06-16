@@ -1,105 +1,131 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
-import SectionHeading from "./SectionHeading";
-import SocialIcon from "./SocialIcon";
-import { contactLinks, socialLinks } from "../data";
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-  const [formStatus, setFormStatus] = useState("");
+  const [status, setStatus] = useState("idle");
 
-  function handleInputChange(event) {
-    const { name, value } = event.target;
-    setFormData((current) => ({ ...current, [name]: value }));
-  }
-
-  function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const subject = encodeURIComponent(formData.subject || "Portfolio inquiry");
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`,
-    );
+    setStatus("sending");
 
-    setFormStatus("Opening your email app with the message details.");
-    window.location.href = `mailto:navtej.dgc@gmail.com?subject=${subject}&body=${body}`;
-  }
+    const formData = new FormData(event.target);
+    
+    // Your actual Web3Forms access key injected here
+    formData.append("access_key", "3e9be042-8c2e-4fad-a3b1-8d4a91046073");
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStatus("success");
+        event.target.reset(); // Clears the form fields after successful send
+        
+        // Reset the button text after 3 seconds
+        setTimeout(() => setStatus("idle"), 3000);
+      } else {
+        setStatus("error");
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      setStatus("error");
+    }
+  };
 
   return (
-    <section id="contact" className="section-shell">
-      <SectionHeading
-        eyebrow="Contact"
-        title="Get in touch"
-        description="Ready to work together? I would love to hear about your project and how I can help bring it to life."
-      />
+    <section id="contact" className="scroll-mt-28 px-5 pb-24 pt-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-2xl">
+        <div className="rounded-3xl border border-white/10 bg-[#0a0a0b] p-8 shadow-2xl">
+          <h2 className="mb-8 text-3xl font-bold text-white">Send me a message</h2>
 
-      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.85fr_1.15fr]">
-        <div>
-          <h3 className="text-2xl font-semibold text-white">Let's connect</h3>
-          <p className="mt-4 text-base leading-7 text-zinc-400">
-            I am always interested in new opportunities, collaborations, and practical discussions about technology.
-          </p>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            {/* Row 1: Name and Email */}
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="name" className="text-sm font-semibold text-white">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  placeholder="Your name"
+                  className="rounded-lg border border-white/10 bg-zinc-900/50 p-3 text-zinc-300 outline-none transition-colors focus:border-emerald-500/50 focus:bg-zinc-900"
+                />
+              </div>
 
-          <div className="mt-7 space-y-3">
-            {contactLinks.map((item) => {
-              const Icon = item.icon;
-              return (
-                <a key={item.label} href={item.href} className="contact-row">
-                  <span className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-white/[0.06] text-cyan-200">
-                    <Icon size={20} />
-                  </span>
-                  <span>
-                    <span className="block text-sm text-zinc-500">{item.label}</span>
-                    <span className="block font-medium text-white">{item.value}</span>
-                  </span>
-                </a>
-              );
-            })}
-          </div>
-
-          <div className="mt-8">
-            <h4 className="text-lg font-semibold text-white">Follow me online</h4>
-            <div className="mt-4 flex flex-wrap gap-3">
-              {socialLinks.map((link) => (
-                <a key={link.label} href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noreferrer" : undefined} className="secondary-action !px-4 !py-2">
-                  <SocialIcon link={link} size={17} />
-                  <span>{link.label}</span>
-                </a>
-              ))}
+              <div className="flex flex-col gap-2">
+                <label htmlFor="email" className="text-sm font-semibold text-white">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  placeholder="your.email@example.com"
+                  className="rounded-lg border border-white/10 bg-zinc-900/50 p-3 text-zinc-300 outline-none transition-colors focus:border-emerald-500/50 focus:bg-zinc-900"
+                />
+              </div>
             </div>
-          </div>
-        </div>
 
-        <form className="rounded-lg border border-white/10 bg-zinc-950/70 p-5 backdrop-blur" onSubmit={handleSubmit}>
-          <h3 className="text-2xl font-semibold text-white">Send me a message</h3>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <label className="form-field">
-              <span>Name</span>
-              <input name="name" value={formData.name} onChange={handleInputChange} placeholder="Your name" required />
-            </label>
-            <label className="form-field">
-              <span>Email</span>
-              <input name="email" type="email" value={formData.email} onChange={handleInputChange} placeholder="your.email@example.com" required />
-            </label>
-          </div>
-          <label className="form-field mt-4">
-            <span>Subject</span>
-            <input name="subject" value={formData.subject} onChange={handleInputChange} placeholder="What is this about?" />
-          </label>
-          <label className="form-field mt-4">
-            <span>Message</span>
-            <textarea name="message" value={formData.message} onChange={handleInputChange} placeholder="Tell me about your project..." rows="6" required />
-          </label>
-          <button type="submit" className="primary-action mt-5 w-full justify-center">
-            <Send size={18} />
-            <span>Submit Message</span>
-          </button>
-          {formStatus ? <p className="mt-4 text-sm text-emerald-300">{formStatus}</p> : null}
-        </form>
+            {/* Row 2: Subject */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="subject" className="text-sm font-semibold text-white">
+                Subject
+              </label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                required
+                placeholder="What is this about?"
+                className="rounded-lg border border-white/10 bg-zinc-900/50 p-3 text-zinc-300 outline-none transition-colors focus:border-emerald-500/50 focus:bg-zinc-900"
+              />
+            </div>
+
+            {/* Row 3: Message */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="message" className="text-sm font-semibold text-white">
+                Message
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                required
+                rows="5"
+                placeholder="Tell me about your project..."
+                className="resize-none rounded-lg border border-white/10 bg-zinc-900/50 p-3 text-zinc-300 outline-none transition-colors focus:border-emerald-500/50 focus:bg-zinc-900"
+              ></textarea>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={status === "sending"}
+              className={`mt-4 flex items-center justify-center gap-2 rounded-full p-4 text-sm font-bold text-black transition-all hover:opacity-90 disabled:opacity-70 ${
+                status === "success" 
+                  ? "bg-emerald-400" 
+                  : "bg-gradient-to-r from-[#4ade80] via-[#facc15] to-[#f87171]" 
+              }`}
+            >
+              {status === "idle" && (
+                <>
+                  <Send size={18} />
+                  Submit Message
+                </>
+              )}
+              {status === "sending" && "Sending..."}
+              {status === "success" && "Message Sent!"}
+              {status === "error" && "Error. Try Again."}
+            </button>
+          </form>
+        </div>
       </div>
     </section>
   );
