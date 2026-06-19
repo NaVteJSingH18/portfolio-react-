@@ -11,7 +11,7 @@ import profileImg from "../assets/avatar.png";
 
 export default function ProfileShowcase() {
   return (
-    <div className="group relative w-full overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/80 p-6 transition-all duration-500 hover:border-white/20 hover:shadow-[0_0_40px_rgba(52,211,153,0.1)]">
+    <div className="group relative w-full max-w-md mx-auto lg:ml-auto overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/80 p-6 transition-all duration-500 hover:border-white/20 hover:shadow-[0_0_40px_rgba(52,211,153,0.1)]">
       
       {/* Background Hover Glow */}
       <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 opacity-0 blur-2xl transition duration-500 group-hover:opacity-100" />
@@ -23,7 +23,7 @@ export default function ProfileShowcase() {
           <img
             src={profileImg}
             alt="Navtej Singh - Full Stack Developer"
-            className="aspect-[4/3] w-full object-cover object-center sm:aspect-video md:aspect-square"
+            className="aspect-[4/3] w-full object-cover object-center sm:aspect-video md:aspect-[4/3]"
           />
           {/* Dark gradient overlay so text is readable */}
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent opacity-90" />
