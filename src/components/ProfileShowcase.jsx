@@ -1,9 +1,6 @@
 import React from "react";
 
-// --- IMAGE TOGGLE AREA ---
-// To use an image, make sure it DOES NOT have // in front of it.
-// To hide an image, put // in front of it. 
-// ONLY ONE image should be active at a time!
+
 
 // IDEA 1: The Avatar (Currently Active)
 import profileImg from "../assets/avatar.png";
@@ -44,7 +41,7 @@ export default function ProfileShowcase() {
             Transforming ideas into scalable, elegant web applications. I focus on clean architecture, modern interfaces, and building products that solve real problems.
           </p>
           <div className="flex flex-wrap gap-2">
-            {["React", "Next.js", "Node.js", "Express", "MongoDB"].map((tech) => (
+            {["React", "Node.js", "Express", "MongoDB"].map((tech) => (
               <span
                 key={tech}
                 className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-zinc-300 transition-colors hover:bg-white/10 hover:text-white"

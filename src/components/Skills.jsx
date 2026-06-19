@@ -23,6 +23,7 @@ export default function Skills() {
               ))}
             </div>
           </article>
+          
         ))}
       </div>
 

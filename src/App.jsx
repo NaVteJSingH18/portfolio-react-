@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 // Layout Components
 import Navbar from "./components/Navbar";
@@ -13,7 +14,11 @@ import Projects from "./components/Projects";
 import Blog from "./components/Blog";
 import Resume from "./components/Resume";
 import Contact from "./components/Contact";
-import BlogModal from "./components/BlogModal";
+
+// Page Components
+import AllBlogs from "./components/AllBlogs";
+import BlogDetail from "./components/BlogDetail";
+import AdminDashboard from "./components/AdminDashboard";
 
 // Data
 import { navItems, fallbackBlogs } from "./data";
@@ -22,14 +27,33 @@ import nsLogo from "../speed-letter-ns-logo-isolated-on-white-background-vector.
 const apiBase = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 const apiUrl = (path) => `${apiBase}${path}`;
 
+// Main Home Page Section Aggregator
+function Home({ blogs }) {
+  return (
+    <>
+      <Hero />
+      <About />
+      <Skills />
+      <Projects />
+      <Blog blogs={blogs} />
+      <Resume />
+      <Contact />
+    </>
+  );
+}
+
 function App() {
   const [activeSection, setActiveSection] = useState("home");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [blogs, setBlogs] = useState(fallbackBlogs);
-  const [selectedBlog, setSelectedBlog] = useState(null);
+  const location = useLocation();
 
-  // Intersection Observer to highlight active link in Navbar
+  // Intersection Observer to highlight active link in Navbar (Homepage only)
   useEffect(() => {
+    if (location.pathname !== "/") {
+      return undefined;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         const visibleEntry = entries.find((entry) => entry.isIntersecting);
@@ -48,7 +72,7 @@ function App() {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [location.pathname]);
 
   // Fetch blogs from API
   useEffect(() => {
@@ -84,50 +108,6 @@ function App() {
     };
   }, []);
 
-  // Lock scrolling when modal is open
-  useEffect(() => {
-    if (!selectedBlog) {
-      return undefined;
-    }
-
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        setSelectedBlog(null);
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
-    };
-  }, [selectedBlog]);
-
-  async function openBlog(blog) {
-    if (!apiBase && fallbackBlogs.some((fallbackBlog) => fallbackBlog.slug === blog.slug)) {
-      setSelectedBlog(blog);
-      return;
-    }
-
-    try {
-      const response = await fetch(apiUrl(`/api/blogs/${blog.slug}`));
-      if (!response.ok) {
-        throw new Error("Blog not found");
-      }
-      const fullBlog = await response.json();
-      setSelectedBlog({
-        slug: fullBlog.slug,
-        title: fullBlog.title,
-        content: fullBlog.content,
-        image: fullBlog.image || blog.image,
-      });
-    } catch {
-      setSelectedBlog(blog);
-    }
-  }
-
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#050506] text-zinc-100">
       <BackgroundSlivers />
@@ -139,18 +119,15 @@ function App() {
       />
 
       <main>
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Blog blogs={blogs} openBlog={openBlog} />
-        <Resume />
-        <Contact />
+        <Routes>
+          <Route path="/" element={<Home blogs={blogs} />} />
+          <Route path="/blogs" element={<AllBlogs />} />
+          <Route path="/blogs/:slug" element={<BlogDetail />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Routes>
       </main>
 
       <Footer />
-
-      {selectedBlog ? <BlogModal blog={selectedBlog} onClose={() => setSelectedBlog(null)} /> : null}
     </div>
   );
 }

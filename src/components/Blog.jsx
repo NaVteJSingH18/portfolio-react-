@@ -1,7 +1,12 @@
 import { ArrowRight, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import SectionHeading from "./SectionHeading";
 
-export default function Blog({ blogs, openBlog }) {
+export default function Blog({ blogs }) {
+  const navigate = useNavigate();
+  // Display only the latest 3 blogs on the homepage feed
+  const latestBlogs = (blogs || []).slice(0, 3);
+
   return (
     <section id="blogs" className="section-shell">
       <SectionHeading
@@ -11,12 +16,12 @@ export default function Blog({ blogs, openBlog }) {
       />
 
       <div className="mx-auto max-w-4xl space-y-4">
-        {blogs.map((blog) => (
+        {latestBlogs.map((blog) => (
           <article 
             key={blog.slug} 
             // The "group" class lets us trigger animations on child elements when the parent is hovered
             className="group cursor-pointer rounded-2xl border border-white/5 bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/10 hover:bg-white/[0.04] hover:shadow-xl hover:shadow-black/20 sm:p-8"
-            onClick={() => openBlog(blog)}
+            onClick={() => navigate(`/blogs/${blog.slug}`)}
           >
             <div className="flex items-center justify-between gap-6">
               
@@ -46,6 +51,17 @@ export default function Blog({ blogs, openBlog }) {
             </div>
           </article>
         ))}
+      </div>
+
+      <div className="mt-10 flex justify-center">
+        <button
+          onClick={() => navigate("/blogs")}
+          className="secondary-action"
+          type="button"
+        >
+          <FileText size={18} />
+          <span>View All Publications</span>
+        </button>
       </div>
     </section>
   );
